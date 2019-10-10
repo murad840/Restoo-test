@@ -57,11 +57,16 @@ Metadata:
       EC2AMI:
         default: EC2 AMI
 Outputs:
-  StagingURL:
+  URL:
+    Description: 'The URL pointing to the static website.'
+
     Value:
-      - !Sub
-        - http://${LoadBalancerDNS}/
-        - { LoadBalancerDNS: !GetAtt StagingLoadBalancer.DNSName }
+      'Fn::Join':
+        - ''
+        - - 'http://'
+          - 'Fn::GetAtt':
+              - StagingLoadBalancer
+              - DNSName
 
 
 
@@ -219,10 +224,8 @@ Resources:
         - Key: !Ref AWS::StackName
           Value: staging
       UserData:
-        Fn::Base64:
-          !Join
-            - ''
-            - - !Sub |
+        'Fn::Base64':
+             !Sub |
                   #!/bin/bash
 
                   # Get Node.js 12
@@ -247,14 +250,14 @@ Resources:
                   ./install auto
 
 
-            -  - !Sub |
+
                   # Signal to CloudFormation that the instance is ready
                   /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --region ${AWS::Region} --resource StagingInstance
                   /opt/aws/bin/cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region} --resource StagingInstance
 
                   # Deploy to outdated instances
                   aws deploy create-deployment --application-name ${AWS::StackName} --deployment-group staging --update-outdated-instances-only --region ${AWS::Region}
-            - ''
+
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
