@@ -17,8 +17,6 @@ phases:
       - npm ci
   build:
     commands:
-      # run the test suite
-      - npm test
 
       # run the build
       - npm run build
