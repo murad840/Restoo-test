@@ -17,7 +17,7 @@ phases:
       - npm ci
   build:
     commands:
-
+      - ls -l
       # run the build
       - npm run main
 artifacts:
