@@ -11,6 +11,11 @@ phases:
       # install Node.js v12
       - curl -sL https://deb.nodesource.com/setup_12.x | bash -
       - apt-get install -y nodejs
+      - apt-get update
+      - echo Installing additional packages
+      - apt-get -y install dpkg-sig lintian fakeroot mongodb-server
+      - echo Starting mongodb server
+      - service mongodb start
   pre_build:
     commands:
       # run npm install using versions in package-lock.json
